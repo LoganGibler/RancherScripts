@@ -66,7 +66,60 @@ def rebuild(username, key_filename):
         print("Command executed successfully. Please verify pods are running via rancher, or use the -view option.")
         print("Closing connection...")
         ssh_client.close()
-  
+
+def fte_log(username, key_filename):
+    storeNumber = input("Enter store number, four digit format 0000: ")
+    hostname = 's' + storeNumber + 'svr'
+
+    ssh_client = paramiko.SSHClient()
+    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    try:
+        ssh_client.connect(hostname=hostname, username=username, key_filename=key_filename)
+        print("Displaying last 200 lines of transfer.log...")
+        stdin, stdout, stderr = ssh_client.exec_command("cd /var/local/volumes/ftp-logs/ && tail -n 200 transfer.log")
+        for line in stdout:
+            print(line.strip())
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+    finally:
+        print("Closing connection...")
+        ssh_client.close()
+
+
+def fte_data(username, key_filename):
+    storeNumber = input("Enter store number, four digit format 0000: ")
+    hostname = 's' + storeNumber + 'svr'
+
+    ssh_client = paramiko.SSHClient()
+    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    print("")
+    print("Displaying contents of /var/local/volumes/fte-data/in and /var/local/volumes/fte-data/out...")
+    print("")
+    try:
+        ssh_client.connect(hostname=hostname, username=username, key_filename=key_filename)
+        
+        print("Here are the files in the 'in' directory:")
+        stdin, stdout, stderr = ssh_client.exec_command("cd /var/local/volumes/fte-data/in && ls -l")
+        for line in stdout:
+            print(line.strip())
+
+        # Print message for the out directory
+        print("\nHere are the files in the 'out' directory:")
+        stdin, stdout, stderr = ssh_client.exec_command("cd /var/local/volumes/fte-data/out && ls -l")
+        for line in stdout:
+            print(line.strip())
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+    finally:
+        print("Closing connection...")
+        ssh_client.close()
+
+
 
 def main():
     username = 'rancher'
@@ -77,8 +130,9 @@ def main():
         options_map = {
             "-view": view_pods,
             "-rebuild": rebuild,
-            # "-rebuild_secondary": rebuild_secondary,
-            "-help": lambda x, y: print("Options: -view, -rebuild")
+            "-fte_log": fte_log,
+            "-fte_data": fte_data,
+            "-help": lambda x, y: print("Options: -view, -rebuild, -fte_log, -fte_data")
         }
 
 
