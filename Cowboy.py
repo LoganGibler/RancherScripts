@@ -132,8 +132,8 @@ def main():
             "-rebuild": rebuild,
             "-fte_log": fte_log,
             "-fte_data": fte_data,
-            "-help": lambda x, y: print("Options: -view, -rebuild, -fte_log, -fte_data"),
-            "-ssh_help": lambda x, y: print("ssh connect command: ssh -i C:\Users\giblelc\Desktop\opensshputtykey rancher@s0002svr \n\n Note: path to /in and /out : /var/local/volumes/fte-data/in and /var/local/volumes/fte-data/.")
+            "-help": lambda x, y: print("Options: -view, -rebuild, -fte_log, -fte_data, -ssh_help"),
+            "-ssh_help": lambda x, y: print('ssh connect command: ssh -i C:\\Users\\giblelc\\Desktop\\opensshputtykey rancher@s0002svr\n\nNote: path to /in and /out : /var/local/volumes/fte-data/in and /var/local/volumes/fte-data/.')
         }
 
 
