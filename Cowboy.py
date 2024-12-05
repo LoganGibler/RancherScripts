@@ -2,6 +2,7 @@ import paramiko
 import sys
 import time
 import keyboard
+import subprocess
 
 def view_pods(username, key_filename):
         storeNumber = input("Enter store number, four digit format 0000: ")
@@ -121,6 +122,21 @@ def fte_data(username, key_filename):
 
 
 
+def open_ssh_shell(username, key_filename):
+    storeNumber = input("Enter store number, four digit format 0000: ")
+    hostname = 's' + storeNumber + 'svr'
+    print("Starting SSH shell... (Press Ctrl+C to exit)")
+    try:
+        subprocess.run([
+            "ssh",
+            "-i", key_filename,
+            f"{username}@{hostname}",
+        ])
+    except FileNotFoundError:
+        print("Error: SSH not found. Make sure OpenSSH is installed and available in your PATH.")
+
+
+
 def main():
     username = 'rancher'
     key_filename = "C:\\Users\\giblelc\\Desktop\\opensshputtykey"
@@ -132,8 +148,9 @@ def main():
             "-rebuild": rebuild,
             "-fte_log": fte_log,
             "-fte_data": fte_data,
-            "-help": lambda x, y: print("Options: -view, -rebuild, -fte_log, -fte_data, -ssh_help"),
-            "-ssh_help": lambda x, y: print('ssh connect command: \n\nServer:     ssh -i C:\\\\Users\\\\giblelc\\\\Desktop\\\\opensshputtykey rancher@s0002svr\n\n CC:     ssh -i C:\\\\Users\\\\giblelc\\\\Desktop\\\\opensshputtykey 5000@cc.s0002.retail.wd.com\n\nNote: path to /in and /out - /var/local/volumes/fte-data/in and /var/local/volumes/fte-data/.')
+            "-help": lambda x, y: print("Options: -view, -rebuild, -fte_log, -fte_data, -ssh_help, -shell"),
+            "-ssh_help": lambda x, y: print('ssh connect command: \n\nServer:     ssh -i C:\\\\Users\\\\giblelc\\\\Desktop\\\\opensshputtykey rancher@s0002svr\n\n CC:     ssh -i C:\\\\Users\\\\giblelc\\\\Desktop\\\\opensshputtykey 5000@cc.s0002.retail.wd.com\n\nNote: path to /in and /out - /var/local/volumes/fte-data/in and /var/local/volumes/fte-data/.'),
+            "-shell": open_ssh_shell
         }
 
 
